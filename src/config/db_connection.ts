@@ -20,16 +20,6 @@ const createDBconnection = async() => {
         await sequelize.sync();
         logger.info(`Connected to ${process.env.NODE_ENV} database.`);
     } catch (error: any) {
-        console.log({
-            username: process.env.DB_USERNAME,
-            password: process.env.DB_PASSWORD,
-            database,
-            host: process.env.DB_HOST,
-            port: Number(process.env.DB_PORT),
-            // multipleStatements: true,
-            logging: false,
-            dialect: "postgres"
-        });
         logger.error('Unable to connect to the database:', error);
     }
 };

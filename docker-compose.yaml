@@ -2,6 +2,49 @@ version: '3.1'
 
 services:
 
+  rabbitmq:
+    image: rabbitmq:3.8-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+      - 5673:5672
+      - 15673:15672
+    # volumes:
+    #     - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+    #     - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - webnet
+
+  redis:
+    image: redis
+    networks:
+      - webnet
+
+  db:
+    image: postgres
+    networks:
+      - webnet
+    environment:
+      POSTGRES_PASSWORD: 1@m.
+      POSTGRES_USER: postgres
+      POSTGRES_DB: boilerplateAPI
+
+  api:
+    image: boilerplate-api
+    depends_on:
+      - "rabbitmq"
+      - "redis"
+      - "db"
+    ports:
+      - "2000:2000"
+    networks:
+      - webnet
+    environment:
+      rabbitMQ_HOST: rabbitmq
+      DB_HOST: db
+      REDIS_HOST: redis
+      AMQP_URL: amqp://guest:guest@rabbitmq:5672
+    command: sh -c '/bin/wait-for-it.sh rabbitmq:5672 --timeout=30 -- npm start'
+   
   pgadmin:
     container_name: pgadmin
     image: dpage/pgadmin4
@@ -14,11 +57,11 @@ services:
     ports:
       - "5050:80"
     networks:
-      - postgres
+      - webnet
     restart: unless-stopped
 
 networks:
-  postgres:
+  webnet:
     driver: bridge
 
 volumes:
