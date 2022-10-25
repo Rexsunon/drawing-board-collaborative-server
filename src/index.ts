@@ -1,10 +1,10 @@
 import express from 'express';
 import appPackage from '../package.json';
-import expressConfig from './configs/expressConfig'; 
+import expressConfig from './config/expressConfig'; 
 import 'dotenv/config';
 import './config/db_connection';
-import "./config/customerRPCServer";
-import "./config/billingRPCServer";
+// import "./configs/customerRPCServer";
+// import "./configs/billingRPCServer";
 
 const port = process.env.PORT || 2000;
 const app = express();

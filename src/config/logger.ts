@@ -118,15 +118,13 @@ class Logger {
       transports: this._getTransports(),
       exitOnError: false
     });
-    /* logger.stream = {
-      write(message: any) {
-        logger.info(message);
-      }
-    }; */
-
-    logger.stream({ start: -1 }).on('log', (log) => {
-      logger.info(log);
+    logger.stream({
+      write: (message: any) => logger.info(message),
     });
+
+    // logger.stream({ start: -1 }).on('log', (log) => {
+    //   logger.info(log);
+    // });
 
     return logger;
   }
